@@ -185,7 +185,7 @@ namespace Hive {
     }
 
     inline httpResponse GetString(const std::string &URL) {
-        HINTERNET interwebs = InternetOpenA("Samsung Smart Fridge", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, NULL);
+        HINTERNET interwebs = InternetOpenA(fmt::format("FlarialClient/{}", COMMIT_HASH).c_str(), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, NULL);
         HINTERNET urlFile;
         std::string rtn;
         DWORD statusCode = 0;
