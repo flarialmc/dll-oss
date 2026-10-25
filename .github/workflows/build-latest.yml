@@ -15,7 +15,7 @@ env:
 
 jobs:
   check-commit:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, flarial-ci, rajesh-gb-1]
     outputs:
       type: ${{ steps.check.outputs.type }}
       build_config: ${{ steps.check.outputs.build_config }}
@@ -106,7 +106,7 @@ jobs:
             build/Flarial.pdb
 
   upload-to-cdn:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, flarial-ci, rajesh-gb-1]
     needs: [check-commit, windows-build]
     if: needs.check-commit.outputs.type != '3' && github.event_name != 'workflow_dispatch'
     steps:
