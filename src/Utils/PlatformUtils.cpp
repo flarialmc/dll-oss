@@ -37,6 +37,11 @@ void PlatformUtils::initialize() {
     // (WinRT file pickers, toast notifications, protocol activation) are simply
     // skipped. This is safe — the worst case is degraded UX, not broken state.
     Logger::info("Platform detected: {}", getPlatformString());
+
+    if (isWine()) {
+        Logger::info("Wine/Proton environment detected: \"Better Frames\" (DX11 fallback) "
+                     "will be enabled by default for new installs");
+    }
 }
 
 
@@ -150,6 +155,17 @@ bool PlatformUtils::isGDK() {
 bool PlatformUtils::isGDKSecure() {
     if (!s_initialized) initialize();
     return s_detectedPlatform == PlatformType::GDKSecure;
+}
+
+bool PlatformUtils::isWine() {
+    // Wine (and Proton, which is built on Wine) exports wine_get_version from
+    // ntdll.dll; native Windows ntdll never exports it. This is the standard,
+    // reliable way to detect a Wine-based environment from inside the process.
+    static bool cached = []() {
+        HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
+        return ntdll != nullptr && GetProcAddress(ntdll, "wine_get_version") != nullptr;
+    }();
+    return cached;
 }
 
 std::string PlatformUtils::getRoamingPath() {

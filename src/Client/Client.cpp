@@ -428,7 +428,13 @@ void Client::initialize()
     ADD_SETTING("fontname", std::string("Space Grotesk"));
     ADD_SETTING("mod_fontname", std::string("Space Grotesk"));
     ADD_SETTING("blurintensity", 2.0f);
-    ADD_SETTING("killdx", false);
+    // "killdx" (Better Frames) defaults to ON under Wine/Proton: the D2D overlay
+    // Flarial draws on top of the game's DX12 backbuffer (via D3D11on12) is not
+    // rendered by Wine's translation layers, so the mod GUI would be invisible.
+    // Defaulting to ON forces the game to recreate its swapchain with DX11, which
+    // works correctly. Explicitly saved values in PRIVATE always win over this
+    // default, and native Windows keeps the previous default of false.
+    ADD_SETTING("killdx", PlatformUtils::isWine());
     ADD_SETTING("disable_alias", false);
     ADD_SETTING("vsync", false);
     ADD_SETTING("recreateAtStart", false);

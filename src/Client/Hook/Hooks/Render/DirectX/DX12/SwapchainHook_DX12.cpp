@@ -47,6 +47,18 @@ void SwapchainHook::DX12Init() {
         return;
     }
 
+    // Warn once when rendering DX12 under Wine/Proton with Better Frames disabled:
+    // Wine's translation layers don't render the D2D-on-DX12 overlay Flarial draws
+    // via D3D11on12, so the mod GUI stays invisible until Better Frames is enabled.
+    static bool warnedWineDX12 = false;
+    if (!warnedWineDX12 && PlatformUtils::isWine())
+    {
+        warnedWineDX12 = true;
+        Logger::warn("[Swapchain] DX12 rendering under Wine/Proton: the Flarial overlay is not "
+                     "rendered by Wine in this mode. Enable \"Better Frames\" in Settings "
+                     "(restarts Minecraft on DX11) to fix the invisible mod GUI.");
+    }
+
     if (!fenceEvent) {
         fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
         if (!fenceEvent) {

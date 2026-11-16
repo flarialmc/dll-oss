@@ -27,6 +27,9 @@ public:
     // Check if current platform is GDK with Store origin
     static bool isGDKSecure();
 
+    // Check if the process is running under Wine/Proton (Linux/macOS compat layers)
+    static bool isWine();
+
     // Initialize platform detection (called once during startup)
     static void initialize();
 
